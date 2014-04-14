@@ -1,0 +1,6 @@
+= everyday
+
+Describe your project here
+
+:include:everyday.rdoc
+

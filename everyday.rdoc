@@ -1,0 +1,5 @@
+= everyday
+
+Generate this with
+    everyday rdoc
+After you have described your command line interface

@@ -1,0 +1,67 @@
+#!/usr/bin/env ruby
+require 'gli'
+require 'highline/import'
+begin # XXX: Remove this begin/rescue before distributing your app
+require 'everyday'
+rescue LoadError
+  STDERR.puts "In development, you need to use `bundle exec bin/everyday` to run your app"
+  STDERR.puts "At install-time, RubyGems will make sure lib, etc. are in the load path"
+  STDERR.puts "Feel free to remove this message from bin/everyday now"
+  exit 64
+end
+
+include GLI::App
+
+program_desc 'This app is to routinize my everyday work.'
+
+version Everyday::VERSION
+
+# desc 'Describe some switch here'
+# switch [:s,:switch]
+#
+# desc 'Describe some flag here'
+# default_value 'the default'
+# arg_name 'The name of the argument'
+# flag [:f,:flagname]
+
+desc 'Initialize my system environment.'
+command :list_my_apps do |c|
+  c.desc 'Include dotfiles or not?'
+  c.switch [:dotfiles, :d], default_value: true
+
+  c.desc 'Include Java or not?'
+  c.switch [:java, :j], default_value: true
+
+  c.desc 'Include Ruby or not?'
+  c.switch [:ruby, :r], default_value: true
+
+  c.action do |global_options,options,args|
+    if options[:dotfiles]
+      
+    end
+  end
+end
+
+
+pre do |global,command,options,args|
+  # Pre logic here
+  # Return true to proceed; false to abort and not call the
+  # chosen command
+  # Use skips_pre before a command to skip this block
+  # on that command only
+  true
+end
+
+post do |global,command,options,args|
+  # Post logic here
+  # Use skips_post before a command to skip this
+  # block on that command only
+end
+
+on_error do |exception|
+  # Error logic here
+  # return false to skip default error handling
+  true
+end
+
+exit run(ARGV)
