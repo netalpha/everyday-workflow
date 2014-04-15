@@ -23,9 +23,33 @@ version Everyday::VERSION
 # default_value 'the default'
 # arg_name 'The name of the argument'
 # flag [:f,:flagname]
+#
+desc 'Install my .ssh folder!'
+command :ssh do |c|
+  c.desc 'Use ssh or https?'
+  c.flag [:type, :t], default_value: 'ssh', must_match: ['ssh', 'https']
+  c.action do |global_options, options, args|
+    ssh_dir = 'test_ssh'
+    puts %x{git clone git@bitbucket.org:Jay_Gong/jay_ssh.git ~/#{ssh_dir}}
+    puts %x{chmod 700 ~/#{ssh_dir}/bitbucket ~/#{ssh_dir}/github_chavez ~/#{ssh_dir}/heroku}
+    if options[:t] == 'https'
+      puts %x{ln -s ~/#{ssh_dir}/config_https ~/#{ssh_dir}/config}
+    else
+      puts %x{ln -s ~/#{ssh_dir}/config_ssh ~/#{ssh_dir}/config}
+    end
+  end
+end
+
+desc 'Install Xcode.app && its development tools!'
+command :xcode do |c|
+  c.action do |global_options, options, args|
+    prompt_install_msg "xcode.app"
+    puts "Please install Xcode.app and its development tools manually."
+  end
+end
 
 desc 'Initialize my system environment.'
-command :list_my_apps do |c|
+command :allinone do |c|
   c.desc 'Include dotfiles or not?'
   c.switch [:dotfiles, :d], default_value: true
 
@@ -37,7 +61,7 @@ command :list_my_apps do |c|
 
   c.action do |global_options,options,args|
     if options[:dotfiles]
-      
+      puts ``
     end
   end
 end
