@@ -29,6 +29,7 @@ command :ssh do |c|
   c.desc 'Use ssh or https?'
   c.flag [:type, :t], default_value: 'ssh', must_match: ['ssh', 'https']
   c.action do |global_options, options, args|
+    prompt_install_msg "dot ssh"
     ssh_dir = 'test_ssh'
     puts %x{git clone git@bitbucket.org:Jay_Gong/jay_ssh.git ~/#{ssh_dir}}
     puts %x{chmod 700 ~/#{ssh_dir}/bitbucket ~/#{ssh_dir}/github_chavez ~/#{ssh_dir}/heroku}
@@ -45,6 +46,52 @@ command :xcode do |c|
   c.action do |global_options, options, args|
     prompt_install_msg "xcode.app"
     puts "Please install Xcode.app and its development tools manually."
+  end
+end
+
+desc 'Install my customized dotfiles.'
+command :dotfiles do |c|
+  c.desc 'Reinstall or Update?'
+  c.flag [:mode, :m], default_value: 'update', must_match: ['update', 'reinstall']
+  c.action do |global_options, options, args|
+    prompt_install_msg 'dotfiles'
+    dotfiles_dir = '~/.yadr'
+    if options[:m] == 'reinstall'
+      puts %x{git clone git@github.com:netalpha/dotfiles.git ~/#{dotfiles_dir}}
+      puts %x{cd #{dotfiles_dir}; rake uninstall; rake update; cd -}
+    else
+      puts %x{cd #{dotfiles_dir}; rake update; cd -}
+    end
+  end
+end
+
+desc 'Install homebrew softwares.'
+command :homebrewapps do |c|
+  c.desc 'Install or update?'
+  c.flag [:mode, :m], default_value: 'update', must_match: ['update', 'install']
+  c.action do |global_options, options, args|
+    prompt_install_msg 'homebrew apps'
+    if options[:m] == 'install'
+      hb_apps = ['tree']
+      hb_apps.each do |app|
+        %x{brew update; brew upgrade; brew install #{app}}
+      end
+    else
+        %x{brew update; brew upgrade}
+    end
+  end
+end
+
+desc 'Install ruby and rails environment.'
+command :ruby do |c|
+  c.action do |global_options, options, args|
+    prompt_install_msg 'rbenv, ruby, rails and bundler'
+    puts %x{brew update; brew install rbenv ruby-build}
+    puts %x{rbenv install 2.1.1}
+    puts %x{rbenv rehash}
+    puts %x{rbenv global 2.1.1}
+    puts %x{gem install rails bundler}
+    puts %x{rbenv rehash}
   end
 end
 
