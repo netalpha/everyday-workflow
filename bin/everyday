@@ -30,13 +30,13 @@ command :ssh do |c|
   c.flag [:type, :t], default_value: 'ssh', must_match: ['ssh', 'https']
   c.action do |global_options, options, args|
     prompt_install_msg "dot ssh"
-    ssh_dir = 'test_ssh'
-    puts %x{git clone git@bitbucket.org:Jay_Gong/jay_ssh.git ~/#{ssh_dir}}
-    puts %x{chmod 700 ~/#{ssh_dir}/bitbucket ~/#{ssh_dir}/github_chavez ~/#{ssh_dir}/heroku}
+    ssh_dir = '~/.ssh'
+    puts %x{git clone git@bitbucket.org:Jay_Gong/jay_ssh.git #{ssh_dir}}
+    puts %x{chmod 700 #{ssh_dir}/bitbucket #{ssh_dir}/github_chavez #{ssh_dir}/heroku}
     if options[:t] == 'https'
-      puts %x{ln -s ~/#{ssh_dir}/config_https ~/#{ssh_dir}/config}
+      puts %x{ln -s #{ssh_dir}/config_https #{ssh_dir}/config}
     else
-      puts %x{ln -s ~/#{ssh_dir}/config_ssh ~/#{ssh_dir}/config}
+      puts %x{ln -s #{ssh_dir}/config_ssh #{ssh_dir}/config}
     end
   end
 end
@@ -51,15 +51,17 @@ end
 
 desc 'Install my customized dotfiles.'
 command :dotfiles do |c|
-  c.desc 'Reinstall or Update?'
-  c.flag [:mode, :m], default_value: 'update', must_match: ['update', 'reinstall']
+  c.desc 'uninstall, reinstall or update?'
+  c.flag [:mode, :m], must_match: ['uninstall','update', 'reinstall']
   c.action do |global_options, options, args|
     prompt_install_msg 'dotfiles'
     dotfiles_dir = '~/.yadr'
     if options[:m] == 'reinstall'
-      puts %x{git clone git@github.com:netalpha/dotfiles.git ~/#{dotfiles_dir}}
+      puts %x{git clone git@github.com:netalpha/dotfiles.git #{dotfiles_dir}}
       puts %x{cd #{dotfiles_dir}; rake uninstall; rake update; cd -}
-    else
+    elsif options[:m] == 'uninstall'
+      puts %x{cd #{dotfiles_dir}; rake uninstall; cd -}
+    elsif options[:m] == 'update'
       puts %x{cd #{dotfiles_dir}; rake update; cd -}
     end
   end
